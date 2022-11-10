@@ -21,7 +21,7 @@ If you have written a PowerShell module, you might have got into some situations
 This module has been tested on:
 
 - Windows 10 and 11 
-- Windows PowerShell 5.1 and PowerShell 7.2
+- Windows PowerShell 5.1 and PowerShell 7.3
 
 > **Warning**
 > It only runs on the ConsoleHost and does not support Windows PowerShell ISE Host or Visual Studio Code Host.
