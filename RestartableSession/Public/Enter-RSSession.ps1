@@ -12,6 +12,9 @@ ScriptBlock that is called at the start of the restartable session.
 .PARAMETER ArgumentList
 An array of arguments that is passed to the OnStart script block.
 
+.PARAMETER ShowProcessId
+Switch to specify if the process ID of the restartable session is shown in the prompt.
+
 .INPUTS
 None.
 
