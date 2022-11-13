@@ -26,7 +26,7 @@ function Restart-RSSession
     {
         if ([RestartableSession.GlobalVariable]::IsInRestartableSession())
         {
-            exit
+            exit [RestartableSession.GlobalVariable]::kExitCodeToRestart
         }
         else
         {

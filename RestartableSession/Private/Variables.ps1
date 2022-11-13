@@ -7,8 +7,8 @@ namespace RestartableSession {
 
 public class GlobalVariable
 {
-    // Magic exit code to break the loop
-    public const int kExitCodeToBreak = 8981;
+    public const int kExitCodeToBreak = 0;
+    public const int kExitCodeToRestart = 1;
 
     public static string PromptPrefix = "";
     public static ScriptBlock OriginalPromptFunction;
