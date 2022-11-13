@@ -10,12 +10,12 @@ public class GlobalVariable
     // Magic exit code to break the loop
     public const int kExitCodeToBreak = 8981;
 
-    public static int RestartCount = 0;
+    public static string PromptPrefix = "";
     public static ScriptBlock OriginalPromptFunction;
 
     public static bool IsInRestartableSession()
     {
-        return RestartCount != 0;
+        return !System.String.IsNullOrEmpty(PromptPrefix);
     }
 }
 

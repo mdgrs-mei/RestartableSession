@@ -41,7 +41,10 @@ function Enter-RSSession
         [ScriptBlock]$OnStart,
 
         [Parameter(ParameterSetName='OnStart', ValueFromPipelineByPropertyName=$true)]
-        [Object[]]$ArgumentList
+        [Object[]]$ArgumentList,
+
+        [Parameter(ValueFromPipelineByPropertyName=$true)]
+        [Switch]$ShowProcessId
     )
 
     process
@@ -64,24 +67,32 @@ function Enter-RSSession
             # Don't use any temporary variables as they are visible to users.
 
             Import-Module RestartableSession
-            [RestartableSession.GlobalVariable]::RestartCount = $args[0]
+
+            if ($args[1])
+            {
+                # ShowProcessId
+                [RestartableSession.GlobalVariable]::PromptPrefix += 'RS({0})[{1}] ' -f $args[0], $PID
+            }
+            else
+            {
+                [RestartableSession.GlobalVariable]::PromptPrefix = 'RS({0}) ' -f $args[0]
+            }
             [RestartableSession.GlobalVariable]::OriginalPromptFunction = (Get-Command Prompt).ScriptBlock
 
             function Prompt
             {
-                $restartCount = [RestartableSession.GlobalVariable]::RestartCount
-                "RS($restartCount) " + [RestartableSession.GlobalVariable]::OriginalPromptFunction.Invoke()
+                [RestartableSession.GlobalVariable]::PromptPrefix + [RestartableSession.GlobalVariable]::OriginalPromptFunction.Invoke()
             }
 
-            if ($args[1])
+            if ($args[2])
             {
-                if ($args.Length -gt 2)
+                if ($args.Length -gt 3)
                 {
-                    Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args[1])) -NoNewScope -ArgumentList $args[2..($args.Length-1)]
+                    Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args[2])) -NoNewScope -ArgumentList $args[3..($args.Length-1)]
                 }
                 else
                 {
-                    Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args[1])) -NoNewScope
+                    Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args[2])) -NoNewScope
                 }
             }
         }
@@ -89,7 +100,7 @@ function Enter-RSSession
         $restartCount = 1
         while ($true)
         {
-            $arguments = @($restartCount, $OnStart) + $ArgumentList
+            $arguments = @($restartCount, ($ShowProcessId -eq $true), $OnStart) + $ArgumentList
 
             & $powershellExe -NoExit -Command $command -Args $arguments
 
