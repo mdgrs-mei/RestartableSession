@@ -15,4 +15,4 @@ $onStart = {
     Start-RSRestartFileWatcher -Path $dir -IncludeSubdirectories
 }
 
-Enter-RSSession -OnStart $onStart -ArgumentList $ModuleDirectory
+Enter-RSSession -OnStart $onStart -ArgumentList $ModuleDirectory -ShowProcessId

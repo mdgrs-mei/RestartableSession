@@ -19,4 +19,4 @@ $onStart = {
     Start-RSRestartFileWatcher -Path $projectDir -IncludeSubdirectories
 }
 
-Enter-RSSession -OnStart $onStart -ArgumentList $DotNetProjectDirectory, $DllPath
+Enter-RSSession -OnStart $onStart -ArgumentList $DotNetProjectDirectory, $DllPath -ShowProcessId

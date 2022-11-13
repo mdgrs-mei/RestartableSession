@@ -15,4 +15,4 @@ $onStart = [ScriptBlock]::Create(@'
     Start-RSRestartFileWatcher -Path {0} -IncludeSubdirectories
 '@ -f $ModuleDirectory)
 
-Enter-RSSession -OnStart $onStart
+Enter-RSSession -OnStart $onStart -ShowProcessId
