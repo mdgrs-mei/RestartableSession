@@ -20,7 +20,7 @@ If you have written a PowerShell module, you might have got into some situations
 
 This module has been tested on:
 
-- Windows 10 and 11 
+- Windows 10, Windows 11 and Ubuntu 20.04
 - Windows PowerShell 5.1 and PowerShell 7.3
 
 > **Warning**
@@ -35,6 +35,8 @@ Install-Module -Name RestartableSession -Scope CurrentUser
 ```
 
 ## Usage
+
+### Basic flow
 
 By calling `Enter-RSSession`, you enter a restartable session. The specified script block is called every time the session is restarted. `RS(n)` is added to the prompt to indicate that you are in a restartable session and how many times you restarted the session. 
 
@@ -65,6 +67,17 @@ RS(2) PS C:\> Exit-RSSession
 PS C:\>
 ```
 
+### Showing Process ID to attach debuggers
+
+By adding `ShowProcessId` switch to `Enter-RSSession`, the process ID of the restartable session is shown in the prompt which makes it easier to attach a debugger from VSCode.
+
+```powershell
+PS C:\> Enter-RSSession -ShowProcessId
+RS(1)[19264] PS C:\> Restart-RSSession
+RS(2)[5860] PS C:\> Exit-RSSession
+PS C:\>
+```
+
 ## Use Cases
 
 ### Script Module development
@@ -79,7 +92,7 @@ function StartScriptModuleDevelopment($ModuleDirectory)
         Import-Module $dir
         Start-RSRestartFileWatcher -Path $dir -IncludeSubdirectories
     }
-    Enter-RSSession -OnStart $onStart -ArgumentList $ModuleDirectory
+    Enter-RSSession -OnStart $onStart -ArgumentList $ModuleDirectory -ShowProcessId
 }
 ```
 
@@ -96,7 +109,7 @@ function StartScriptClassModuleDevelopment($ModuleDirectory)
     Start-RSRestartFileWatcher -Path {0} -IncludeSubdirectories
 '@
     $onStart = [ScriptBlock]::Create($scriptBlockString -f $ModuleDirectory)
-    Enter-RSSession -OnStart $onStart
+    Enter-RSSession -OnStart $onStart -ShowProcessId
 }
 ```
 
@@ -113,7 +126,7 @@ function StartBinaryModuleDevelopment($DotNetProjectDirectory, $DllPath)
         Import-Module $dll
         Start-RSRestartFileWatcher -Path $projectDir -IncludeSubdirectories
     }
-    Enter-RSSession -OnStart $onStart -ArgumentList $DotNetProjectDirectory, $DllPath
+    Enter-RSSession -OnStart $onStart -ArgumentList $DotNetProjectDirectory, $DllPath -ShowProcessId
 }
 ```
 
