@@ -71,14 +71,13 @@ function Enter-RSSession
 
             Import-Module RestartableSession
 
-            if ($args[1])
+            if ($args.showProcessId)
             {
-                # ShowProcessId
-                [RestartableSession.GlobalVariable]::PromptPrefix += 'RS({0})[{1}] ' -f $args[0], $PID
+                [RestartableSession.GlobalVariable]::PromptPrefix += 'RS({0})[{1}] ' -f $args.restartCount, $PID
             }
             else
             {
-                [RestartableSession.GlobalVariable]::PromptPrefix = 'RS({0}) ' -f $args[0]
+                [RestartableSession.GlobalVariable]::PromptPrefix = 'RS({0}) ' -f $args.restartCount
             }
             [RestartableSession.GlobalVariable]::OriginalPromptFunction = (Get-Command Prompt).ScriptBlock
 
@@ -87,15 +86,15 @@ function Enter-RSSession
                 [RestartableSession.GlobalVariable]::PromptPrefix + [RestartableSession.GlobalVariable]::OriginalPromptFunction.Invoke()
             }
 
-            if ($args[2])
+            if ($args.onStart)
             {
-                if ($args.Length -gt 3)
+                if ($args.onStartArgumentList)
                 {
-                    Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args[2])) -NoNewScope -ArgumentList $args[3..($args.Length-1)]
+                    Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args.onStart)) -NoNewScope -ArgumentList $args.onStartArgumentList
                 }
                 else
                 {
-                    Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args[2])) -NoNewScope
+                    Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args.onStart)) -NoNewScope
                 }
             }
         }
@@ -103,7 +102,12 @@ function Enter-RSSession
         $restartCount = 1
         while ($true)
         {
-            $arguments = @($restartCount, ($ShowProcessId -eq $true), $OnStart) + $ArgumentList
+            $arguments = @{
+                restartCount = $restartCount
+                showProcessId = ($ShowProcessId -eq $true)
+                onStart = $OnStart
+                onStartArgumentList = $ArgumentList
+            }
 
             & $powershellExe -NoExit -Command $command -Args $arguments
 
