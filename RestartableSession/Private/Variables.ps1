@@ -10,6 +10,7 @@ public class GlobalVariable
     public const int kExitCodeToBreak = 0;
     public const int kExitCodeToRestart = 1;
 
+    public static bool IsDevMode = false;
     public static string PromptPrefix = "";
     public static ScriptBlock OriginalPromptFunction;
 

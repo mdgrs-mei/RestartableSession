@@ -65,11 +65,17 @@ function Enter-RSSession
         }
 
         $powershellExe = (Get-Process -Id $PID).Path
+        $modulePath = 'RestartableSession'
+        if ([RestartableSession.GlobalVariable]::IsDevMode)
+        {
+            $modulePath = Split-Path $PSScriptRoot -Parent
+        }
+
         $command = {
             # This is executed in the created new session scope.
             # Don't use any temporary variables as they are visible to users.
 
-            Import-Module RestartableSession
+            Import-Module $args.modulePath
 
             if ($args.showProcessId)
             {
@@ -104,6 +110,7 @@ function Enter-RSSession
         {
             $arguments = @{
                 restartCount = $restartCount
+                modulePath = $modulePath
                 showProcessId = ($ShowProcessId -eq $true)
                 onStart = $OnStart
                 onStartArgumentList = $ArgumentList
