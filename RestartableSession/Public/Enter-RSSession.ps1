@@ -9,8 +9,14 @@ The PowerShell executable that called this function is used to create a new sess
 .PARAMETER OnStart
 ScriptBlock that is called at the start of the restartable session.
 
-.PARAMETER ArgumentList
+.PARAMETER OnStartArgumentList
 An array of arguments that is passed to the OnStart script block.
+
+.PARAMETER OnEnd
+ScriptBlock that is called at the end of the restartable session.
+
+.PARAMETER OnEndArgumentList
+An array of arguments that is passed to the OnEnd script block.
 
 .PARAMETER ShowProcessId
 Switch to specify if the process ID of the restartable session is shown in the prompt.
@@ -31,7 +37,7 @@ $onStart = {
     Import-Module $modulePath
     Start-RSRestartFileWatcher -Path $modulePath -IncludeSubdirectories
 }
-Enter-RSSession -OnStart $onStart -ArgumentList D:\ScriptModuleTest
+Enter-RSSession -OnStart $onStart OnStartArgumentList D:\ScriptModuleTest
 
 #>
 function Enter-RSSession
