@@ -46,7 +46,8 @@ function Enter-RSSession
 
         [Parameter(ParameterSetName='OnStart', ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='OnStartOnEnd', ValueFromPipelineByPropertyName=$true)]
-        [Object[]]$ArgumentList,
+        [Alias('ArgumentList')]
+        [Object[]]$OnStartArgumentList,
 
         [Parameter(ParameterSetName='Default', Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='OnEnd', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
@@ -130,7 +131,7 @@ function Enter-RSSession
                 modulePath = $modulePath
                 showProcessId = ($ShowProcessId -eq $true)
                 onStart = $OnStart
-                onStartArgumentList = $ArgumentList
+                onStartArgumentList = $OnStartArgumentList
                 onEnd = $OnEnd
                 onEndArgumentList = $OnEndArgumentList
             }
