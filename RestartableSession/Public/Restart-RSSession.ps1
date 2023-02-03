@@ -26,6 +26,10 @@ function Restart-RSSession
     {
         if ([RestartableSession.GlobalVariable]::IsInRestartableSession())
         {
+            if ([RestartableSession.GlobalVariable]::OnEnd)
+            {
+                [RestartableSession.GlobalVariable]::OnEnd.Invoke([RestartableSession.GlobalVariable]::OnEndArgumentList)
+            }
             exit [RestartableSession.GlobalVariable]::kExitCodeToRestart
         }
         else

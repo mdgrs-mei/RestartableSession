@@ -36,15 +36,26 @@ Enter-RSSession -OnStart $onStart -ArgumentList D:\ScriptModuleTest
 #>
 function Enter-RSSession
 {
-    [CmdletBinding(DefaultParameterSetName='NoOnStart')]
+    [CmdletBinding(DefaultParameterSetName='Default')]
     param
     (
-        [Parameter(ParameterSetName='NoOnStart', Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='Default', Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='OnStart', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnStartOnEnd', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
         [ScriptBlock]$OnStart,
 
         [Parameter(ParameterSetName='OnStart', ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnStartOnEnd', ValueFromPipelineByPropertyName=$true)]
         [Object[]]$ArgumentList,
+
+        [Parameter(ParameterSetName='Default', Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnEnd', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnStartOnEnd', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
+        [ScriptBlock]$OnEnd,
+
+        [Parameter(ParameterSetName='OnEnd', ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnStartOnEnd', ValueFromPipelineByPropertyName=$true)]
+        [Object[]]$OnEndArgumentList,
 
         [Parameter(ValueFromPipelineByPropertyName=$true)]
         [Switch]$ShowProcessId
@@ -103,6 +114,12 @@ function Enter-RSSession
                     Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args.onStart)) -NoNewScope
                 }
             }
+
+            if ($args.onEnd)
+            {
+                [RestartableSession.GlobalVariable]::OnEnd = [ScriptBlock]::Create($args.onEnd)
+                [RestartableSession.GlobalVariable]::OnEndArgumentList = $args.onEndArgumentList
+            }
         }
 
         $restartCount = 1
@@ -114,6 +131,8 @@ function Enter-RSSession
                 showProcessId = ($ShowProcessId -eq $true)
                 onStart = $OnStart
                 onStartArgumentList = $ArgumentList
+                onEnd = $OnEnd
+                onEndArgumentList = $OnEndArgumentList
             }
 
             & $powershellExe -NoExit -Command $command -Args $arguments
