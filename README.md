@@ -145,3 +145,6 @@ function StartBinaryModuleDevelopment($DotNetProjectDirectory, $DllPath)
 
 https://user-images.githubusercontent.com/81177095/200581798-56271cf6-ced4-409b-b043-7e7563e89687.mp4
 
+## Changelog
+
+Changelog is available [here](https://github.com/mdgrs-mei/RestartableSession/blob/main/CHANGELOG.md)
