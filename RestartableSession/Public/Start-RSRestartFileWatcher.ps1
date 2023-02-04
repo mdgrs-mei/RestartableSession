@@ -79,6 +79,10 @@ function Start-RSRestartFileWatcher
             $process = Get-Process -Id $Event.MessageData -ErrorAction Ignore
             if ($process)
             {
+                if ([RestartableSession.GlobalVariable]::OnEnd)
+                {
+                    [RestartableSession.GlobalVariable]::OnEnd.Invoke([RestartableSession.GlobalVariable]::OnEndArgumentList) | Out-Default
+                }
                 Stop-Process $process
             }
         }

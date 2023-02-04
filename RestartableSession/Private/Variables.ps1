@@ -12,7 +12,9 @@ public class GlobalVariable
 
     public static bool IsDevMode = false;
     public static string PromptPrefix = "";
-    public static ScriptBlock OriginalPromptFunction;
+    public static ScriptBlock OriginalPromptFunction = null;
+    public static ScriptBlock OnEnd = null;
+    public static System.Object[] OnEndArgumentList = null;
 
     public static bool IsInRestartableSession()
     {

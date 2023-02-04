@@ -9,8 +9,14 @@ The PowerShell executable that called this function is used to create a new sess
 .PARAMETER OnStart
 ScriptBlock that is called at the start of the restartable session.
 
-.PARAMETER ArgumentList
+.PARAMETER OnStartArgumentList
 An array of arguments that is passed to the OnStart script block.
+
+.PARAMETER OnEnd
+ScriptBlock that is called at the end of the restartable session.
+
+.PARAMETER OnEndArgumentList
+An array of arguments that is passed to the OnEnd script block.
 
 .PARAMETER ShowProcessId
 Switch to specify if the process ID of the restartable session is shown in the prompt.
@@ -31,20 +37,32 @@ $onStart = {
     Import-Module $modulePath
     Start-RSRestartFileWatcher -Path $modulePath -IncludeSubdirectories
 }
-Enter-RSSession -OnStart $onStart -ArgumentList D:\ScriptModuleTest
+Enter-RSSession -OnStart $onStart -OnStartArgumentList D:\ScriptModuleTest
 
 #>
 function Enter-RSSession
 {
-    [CmdletBinding(DefaultParameterSetName='NoOnStart')]
+    [CmdletBinding(DefaultParameterSetName='Default')]
     param
     (
-        [Parameter(ParameterSetName='NoOnStart', Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='Default', Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
         [Parameter(ParameterSetName='OnStart', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnStartOnEnd', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
         [ScriptBlock]$OnStart,
 
         [Parameter(ParameterSetName='OnStart', ValueFromPipelineByPropertyName=$true)]
-        [Object[]]$ArgumentList,
+        [Parameter(ParameterSetName='OnStartOnEnd', ValueFromPipelineByPropertyName=$true)]
+        [Alias('ArgumentList')]
+        [Object[]]$OnStartArgumentList,
+
+        [Parameter(ParameterSetName='Default', Mandatory=$false, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnEnd', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnStartOnEnd', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
+        [ScriptBlock]$OnEnd,
+
+        [Parameter(ParameterSetName='OnEnd', ValueFromPipelineByPropertyName=$true)]
+        [Parameter(ParameterSetName='OnStartOnEnd', ValueFromPipelineByPropertyName=$true)]
+        [Object[]]$OnEndArgumentList,
 
         [Parameter(ValueFromPipelineByPropertyName=$true)]
         [Switch]$ShowProcessId
@@ -103,6 +121,12 @@ function Enter-RSSession
                     Invoke-Command -ScriptBlock ([ScriptBlock]::Create($args.onStart)) -NoNewScope
                 }
             }
+
+            if ($args.onEnd)
+            {
+                [RestartableSession.GlobalVariable]::OnEnd = [ScriptBlock]::Create($args.onEnd)
+                [RestartableSession.GlobalVariable]::OnEndArgumentList = $args.onEndArgumentList
+            }
         }
 
         $restartCount = 1
@@ -113,7 +137,9 @@ function Enter-RSSession
                 modulePath = $modulePath
                 showProcessId = ($ShowProcessId -eq $true)
                 onStart = $OnStart
-                onStartArgumentList = $ArgumentList
+                onStartArgumentList = $OnStartArgumentList
+                onEnd = $OnEnd
+                onEndArgumentList = $OnEndArgumentList
             }
 
             & $powershellExe -NoExit -Command $command -Args $arguments
