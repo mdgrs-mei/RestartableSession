@@ -81,7 +81,7 @@ function Start-RSRestartFileWatcher
             {
                 if ([RestartableSession.GlobalVariable]::OnEnd)
                 {
-                    [RestartableSession.GlobalVariable]::OnEnd.Invoke([RestartableSession.GlobalVariable]::OnEndArgumentList) | Write-Host
+                    [RestartableSession.GlobalVariable]::OnEnd.Invoke([RestartableSession.GlobalVariable]::OnEndArgumentList) | Out-Default
                 }
                 Stop-Process $process
             }
