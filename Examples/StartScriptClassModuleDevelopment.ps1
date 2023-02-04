@@ -7,7 +7,8 @@ param
     $ModuleDirectory
 )
 
-Import-Module "$PSScriptRoot\..\RestartableSession"
+$devMode = $true
+Import-Module "$PSScriptRoot\..\RestartableSession" -ArgumentList $devMode
 
 # Note that in order to use 'using module' inside a script block, you need to create the script block from a string.
 $onStart = [ScriptBlock]::Create(@'

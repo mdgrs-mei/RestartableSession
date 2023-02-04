@@ -7,7 +7,8 @@ param
     $ModuleDirectory
 )
 
-Import-Module "$PSScriptRoot\..\RestartableSession"
+$devMode = $true
+Import-Module "$PSScriptRoot\..\RestartableSession" -ArgumentList $devMode
 
 $onStart = {
     param($dir)

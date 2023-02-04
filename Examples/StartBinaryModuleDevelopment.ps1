@@ -10,7 +10,8 @@ param
     $DllPath
 )
 
-Import-Module "$PSScriptRoot\..\RestartableSession"
+$devMode = $true
+Import-Module "$PSScriptRoot\..\RestartableSession" -ArgumentList $devMode
 
 $onStart = {
     param($projectDir, $dll)
