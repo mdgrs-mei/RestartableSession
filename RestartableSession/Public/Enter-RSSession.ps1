@@ -37,7 +37,7 @@ $onStart = {
     Import-Module $modulePath
     Start-RSRestartFileWatcher -Path $modulePath -IncludeSubdirectories
 }
-Enter-RSSession -OnStart $onStart OnStartArgumentList D:\ScriptModuleTest
+Enter-RSSession -OnStart $onStart -OnStartArgumentList D:\ScriptModuleTest
 
 #>
 function Enter-RSSession
