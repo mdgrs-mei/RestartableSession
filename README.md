@@ -41,7 +41,7 @@ Install-Module -Name RestartableSession -Scope CurrentUser
 By calling `Enter-RSSession`, you enter a restartable session. The specified script block is called every time the session is restarted. `RS(n)` is added to the prompt to indicate that you are in a restartable session and how many times you restarted the session. 
 
 ```powershell
-PS C:\> Enter-RSSession -OnStart {"Hello"}
+PS C:\> Enter-RSSession -OnStart {'Hello'}
 Hello
 RS(1) PS C:\> 
 ```
@@ -64,6 +64,19 @@ Finally, when you've done with the module development, you can return to the cal
 
 ```powershell
 RS(2) PS C:\> Exit-RSSession
+PS C:\>
+```
+
+### OnStart and OnEnd
+
+`OnStart` script block is called at the start of an RSSession and `OnEnd` script block is called at the end of the RSSession. The script blocks are called in a newly created session so if you want to pass variables of the caller session, you have to pass them through `OnStartArgumentList` or `OnEndArgumentList`. All the variables and functions defined in `OnStart` are visible in the session because it is executed in the session scope.
+
+```powershell
+PS C:\> Enter-RSSession -OnStart {$var = 99} -OnEnd {$var}
+RS(1) PS C:\> $var
+99
+RS(1) PS C:\> Exit-RSSession
+99
 PS C:\>
 ```
 
@@ -92,7 +105,7 @@ function StartScriptModuleDevelopment($ModuleDirectory)
         Import-Module $dir
         Start-RSRestartFileWatcher -Path $dir -IncludeSubdirectories
     }
-    Enter-RSSession -OnStart $onStart -ArgumentList $ModuleDirectory -ShowProcessId
+    Enter-RSSession -OnStart $onStart -OnStartArgumentList $ModuleDirectory -ShowProcessId
 }
 ```
 
@@ -126,7 +139,7 @@ function StartBinaryModuleDevelopment($DotNetProjectDirectory, $DllPath)
         Import-Module $dll
         Start-RSRestartFileWatcher -Path $projectDir -IncludeSubdirectories
     }
-    Enter-RSSession -OnStart $onStart -ArgumentList $DotNetProjectDirectory, $DllPath -ShowProcessId
+    Enter-RSSession -OnStart $onStart -OnStartArgumentList $DotNetProjectDirectory, $DllPath -ShowProcessId
 }
 ```
 
