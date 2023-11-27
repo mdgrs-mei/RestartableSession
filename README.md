@@ -8,6 +8,8 @@
 
 [![Pester Test](https://github.com/mdgrs-mei/RestartableSession/actions/workflows/pester-test.yml/badge.svg)](https://github.com/mdgrs-mei/RestartableSession/actions/workflows/pester-test.yml)
 
+[![Hashnode](https://img.shields.io/badge/Hashnode-2962FF?style=for-the-badge&logo=hashnode&logoColor=white)](https://mdgrs.hashnode.dev/speeding-up-powershell-module-development-with-restartablesession)
+
 *RestartableSession* is a PowerShell module to instantly and properly reflect the code changes to the module or script you are making. It helps you perform quick interactive testing on the console.
 
 https://user-images.githubusercontent.com/81177095/200330265-cdbcbfa7-ca64-419d-8f06-0c946e562d2d.mp4
